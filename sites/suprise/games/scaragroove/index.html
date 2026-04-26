@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScaraGroove</title>
+    <style>
+        body {
+        font-family: Arial, sans-serif;
+        background: url('images/inazuma-background.jpg') no-repeat center center fixed;
+        background-size: cover; /* Make the background cover the entire screen */
+        color: white;
+        text-align: center;
+    }
+
+    #game-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px auto;
+    }
+
+    #game-area {
+        position: relative;
+        width: 400px;
+        height: 600px;
+        background-color: rgba(30, 30, 30, 0.8); /* Slight transparency for the game area */
+        border: 5px solid #ffffff;
+        border-radius: 15px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5); /* Soft shadow for depth */
+    }
+
+    .arrow {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        opacity: 0.7;
+    }
+
+    .arrow.up { background: url('images/up-arrow.jpg') no-repeat center; background-size: cover; }
+    .arrow.down { background: url('images/down-arrow.png') no-repeat center; background-size: cover; }
+    .arrow.left { background: url('images/left-arrow.jpg') no-repeat center; background-size: cover; }
+    .arrow.right { background: url('images/right-arrow.jpg') no-repeat center; background-size: cover; }
+
+    #scara-dance {
+        width: 100px;
+        height: 200px;
+        background: url('scara.png') no-repeat center;
+        background-size: contain;
+        position: absolute;
+        bottom: 20px;
+        left: 150px;
+    }
+
+    /* Display for score, misses, and combo */
+    #score, #misses, #combo {
+        font-size: 24px;
+        margin-top: 10px;
+        color: #fff;
+        text-shadow: 2px 2px 4px #000;
+    }
+
+    #play-again {
+        font-size: 24px;
+        padding: 10px 20px;
+        background-color: #4CAF50; /* Green background */
+        color: white; /* White text */
+        border: none; /* Remove border */
+        cursor: pointer; /* Make it look clickable */
+        border-radius: 5px; /* Rounded corners */
+        position: absolute;
+        top: 40%; /* Moved up from 50% to 40% */
+        left: 50%;
+        transform: translate(-50%, -50%); /* Center the button */
+        display: none; /* Hidden by default */
+        z-index: 10; /* Ensure it appears on top */
+    }
+
+    #play-again:hover {
+        background-color: #45a049; /* Darken button on hover */
+    }
+
+    #game-over {
+        font-size: 48px;
+        color: #FF4B4B; /* Inazuma-inspired red for game over */
+        text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.8); /* Glowing shadow effect */
+        display: none;
+        position: absolute;
+        top: 30%; /* Moved up from 40% to 30% */
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+    }
+
+    /* Styling the timing box */
+    .timing-box {
+        position: absolute;
+        bottom: 50px;
+        left: 0;
+        width: 100%;
+        height: 50px;
+        border-top: 4px solid yellow;
+        border-bottom: 4px solid yellow;
+    }
+
+    /* Arrow boxes aligned to match keys */
+    .timing-box div {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background-color: rgba(255, 255, 255, 0.4);
+        border: 2px solid yellow;
+    }
+
+    .timing-box .up { left: 100px; }
+    .timing-box .down { left: 200px; }
+    .timing-box .left { left: 0; }
+    .timing-box .right { left: 300px; }
+
+    /* Countdown timer */
+    #countdown {
+        font-size: 48px;
+        color: #FDD835; /* Gold color for countdown */
+        display: none;
+        text-shadow: 2px 2px 5px #000;
+    }
+
+    /* Start Button */
+    #start-button {
+        font-size: 24px;
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    #start-button:hover {
+        background-color: #388E3C;
+    }
+
+     /* Flashy feedback styles for Perfect, Great, Ok */
+    .hit-feedback {
+        font-size: 36px;
+        font-weight: bold;
+        position: absolute;
+        top: 40%; /* Centered vertically */
+        left: 50%; /* Centered horizontally */
+        transform: translate(-50%, -50%); /* Center the feedback */
+        opacity: 0; /* Initially hidden */
+        z-index: 1000; /* Ensure it appears on top of everything */
+        animation: feedbackGlow 0.6s forwards; /* Flashy glowing effect */
+    }
+
+    /* Feedback glow animation */
+    @keyframes feedbackGlow {
+        0% {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        50% {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.5);
+        }
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(1);
+        }
+    }
+
+    .perfect {
+        color: #00FF00; /* Green for Perfect */
+        text-shadow: 0px 0px 10px #00FF00;
+    }
+
+    .great {
+        color: #FFD700; /* Gold for Great */
+        text-shadow: 0px 0px 10px #FFD700;
+    }
+
+    .ok {
+        color: #FFA500; /* Orange for Ok */
+        text-shadow: 0px 0px 10px #FFA500;
+    }
+
+     /* Container for the HUD in the top-right corner */
+     #hud {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: auto;
+        padding: 15px;
+        color: white;
+        text-align: right; /* Align text to the right for a cleaner look */
+        font-family: 'Arial', sans-serif;
+    }
+
+    /* Big Score display */
+    #score {
+        font-size: 48px; /* Make score large and bold */
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #FFD700; /* Gold for score */
+        text-shadow: 2px 2px 5px black;
+    }
+
+    /* Smaller displays for Combo, Multiplier, and Misses */
+    #combo, #multiplier, #misses {
+        font-size: 18px; /* Smaller text for the details */
+        margin-bottom: 5px;
+        color: #FFFFFF; /* White text */
+        text-shadow: 1px 1px 3px black; /* Light shadow for better readability */
+    }
+
+    /* Label for combo multiplier (e.g., "n-times") */
+    .combo-label {
+        color: #FFD700; /* Gold for "n-times" */
+        font-weight: bold;
+    }
+
+    h1 {
+        font-size: 64px;
+        font-family: 'Arial', sans-serif;
+        color: #FFD700; /* Golden color */
+        text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.8), 0 0 20px #FFD700;
+        animation: glow 1.5s infinite alternate; /* Glow effect with animation */
+        margin-bottom: 20px;
+    }
+
+    @keyframes glow {
+        0% {
+            text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.3), 0 0 5px #FFD700;
+        }
+        100% {
+            text-shadow: 2px 2px 12px rgba(255, 255, 255, 0.8), 0 0 20px #FFD700;
+        }
+    }
+
+/* Scaramouche dancers on the left and right */
+#left-scara, #right-scara {
+    width: 250px;
+    height: 500px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none; /* Hidden by default */
+    animation: dance 1.875s infinite; /* Longer cycle to include a normal dance + 360-degree turn */
+}
+
+#left-scara {
+    left: 250px; /* Positioned closer to the middle-left */
+    background-image: url('images/scara-left.png');
+}
+
+#right-scara {
+    right: 250px; /* Positioned closer to the middle-right */
+    background-image: url('images/scara-right.png');
+}
+
+/* Normal dance with occasional 360-degree turn */
+@keyframes dance {
+    0% {
+        transform: translateY(-50%) scale(1) rotate(0deg); /* Normal position */
+        filter: brightness(100%);
+    }
+    25% {
+        transform: translateY(-45%) scale(1.1) rotate(-10deg); /* Small rotation and scale up */
+        filter: brightness(120%); /* Subtle flash */
+    }
+    50% {
+        transform: translateY(-50%) scale(1) rotate(0deg); /* Back to normal */
+        filter: brightness(100%);
+    }
+    75% {
+        transform: translateY(-55%) scale(1.1) rotate(10deg); /* Small rotation in the opposite direction */
+        filter: brightness(120%);
+    }
+    85% {
+        transform: translateY(-50%) scale(1) rotate(0deg); /* Back to normal before turn */
+        filter: brightness(100%);
+    }
+    100% {
+        transform: translateY(-50%) scale(1) rotate(360deg); /* Full 360-degree turn */
+        filter: brightness(150%); /* Flashy brightness during the turn */
+    }
+}
+
+/* Subtle glow effect */
+@keyframes glowscara {
+    0%, 100% {
+        box-shadow: 0 0 5px #FFD700, 0 0 10px #FFD700; /* Less intense glow */
+    }
+    50% {
+        box-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700; /* Slightly more intense in the middle */
+    }
+}
+
+#left-scara, #right-scara {
+    animation: dance 1.875s infinite, glow 2s infinite alternate; /* Combine normal dance, occasional turn, and subtle glow */
+}
+
+
+
+    /* Make sure the game-area has a relative position to align dancers correctly */
+    #game-area {
+        position: relative;
+        z-index: 1; /* Lower than hit feedback */
+        overflow: visible; /* Ensure hit feedback isn’t clipped */
+    }
+    /* Song Selection Dropdown */
+#song-selection {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: rgba(192, 142, 232, 91); /* Light yellow background */
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3); /* Soft shadow for depth */
+    font-family: Arial, sans-serif;
+}
+
+#song-selection label {
+    font-weight: bold;
+    color: black; /* Black text for better readability */
+    margin-right: 10px;
+}
+
+#song-choice {
+    padding: 5px 10px;
+    font-size: 16px;
+    border: none;
+    background-color: white; /* White background for dropdown */
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+#song-choice:hover {
+    background-color: #f0f0f0; /* Light hover effect */
+}
+
+#song-choice:focus {
+    outline: none; /* Remove outline when focused */
+    border: 2px solid #FFD700; /* Add a golden border when focused */
+}
+    </style>
+</head>
+<body>
+
+    <h1>ScaraGroove</h1>
+
+    <div id="game-container">
+        <div id="game-area">
+            <div id="scara-dance"></div>
+
+            <!-- Timing Box at the bottom to match the arrows -->
+            <div class="timing-box">
+                <div class="left"></div>
+                <div class="up"></div>
+                <div class="down"></div>
+                <div class="right"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dropdown to select songs -->
+    <div id="song-selection">
+        <label for="song-choice">🎵 Choose a Song:</label>
+        <select id="song-choice">
+            <option value="songs/song2.mp3">Army Dreamers 144 BPM</option>
+            <option value="songs/song.mp3">Persona - Specialist 128 BPM</option>
+            <option value="songs/song3.mp3">Polumnia Omnia 160 BPM</option>
+            <option value="songs/seasons.mp3">Seasons 60 BPM</option>
+            <option value="songs/only.mp3">Only 123 BPM</option>
+            <option value="songs/silhouette.mp3">Silhouette 160 BPM</option>
+            <option value="songs/samidare.mp3">Samidare 112 BPM</option>
+            <option value="songs/birdsofafeather.mp3">BIRDS OF A FEATHER 105 BPM</option>
+            <option value="songs/oshinoko.mp3">Oshi No Ko 166 BPM</option>
+            <option value="songs/cupid.mp3">Cupid 288 BPM</option>
+            <option value="songs/apt.mp3">APT 149 BPM</option>
+            <option value="songs/kororon.mp3">Kororon 125 BPM</option>
+            <option value="songs/adospyxfamily.mp3">Ado Spy x Family 188 BPM</option>
+            <option value="songs/NoOneNoticed.mp3">No One Noticed 196 BPM</option>
+            <option value="songs/staywithme.mp3">Miki Matsubara Stay With Me 108 BPM</option>
+            <option value="songs/diewithasmile.mp3">Die With A Smile 158 BPM</option>
+
+        </select>
+    </div>
+
+
+    <!-- Display score, missed arrows, and combo -->
+    <div id="hud">
+        <!-- Large Score -->
+        <div id="score">0</div>
+        
+        <!-- Combo with "n-times" label -->
+        <div id="combo">
+            <span >Combo:</span> <span class="value">0</span>
+        </div>
+        
+        <!-- Multiplier -->
+        <div id="multiplier">Multiplier: x1</div>
+        
+        <!-- Misses -->
+        <div id="misses">Misses: 0</div>
+    </div>
+    <!-- Game Over and Play Again button -->
+    <p id="game-over">Game Over!</p>
+    <button id="play-again" style="display: none;">Play Again</button> <!-- Play Again button -->
+
+    <div id="left-scara"></div> <!-- Left Scaramouche -->
+    <div id="right-scara"></div> <!-- Right Scaramouche -->
+
+    <!-- Countdown and Start Button -->
+    <div id="countdown"></div>
+    <button id="start-button">Start Game</button>
+
+    <audio id="background-music" preload="auto">
+        <source src="songs/song2.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script src="game.js"></script>
+</body>
+</html>

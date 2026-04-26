@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gaga Envelope</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      background: url('image/liyue.jpg') no-repeat center center fixed;
+      background-size: cover;
+      background-attachment: fixed;
+      position: relative;
+    }
+    
+    /* Overlay for better readability */
+    body:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,0.0);
+      z-index: 0;
+    }
+    
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 1.8rem;
+      position: relative;
+      z-index: 10;
+      text-shadow: 1px 1px 3px rgba(255,255,255,0.8);
+    }
+    
+    /* Main content container */
+    .content {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+    }
+    
+    /* Envelope Container */
+    .envelope-container {
+      position: relative;
+      width: 250px;
+      height: 150px;
+      margin: 50px auto;
+      cursor: pointer;
+      z-index: 10;
+    }
+    
+    /* Envelope base */
+    .envelope {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #3a4a7e;
+      border-radius: 8px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+      z-index: 1;
+      transition: all 0.3s ease;
+    }
+    
+    /* Envelope flap */
+    .envelope:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 75px;
+      background: #5d76cb;
+      border-radius: 8px 8px 0 0;
+      transform-origin: top center;
+      transform: rotateX(0deg);
+      transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      z-index: 3;
+      clip-path: polygon(0 0, 100% 0, 50% 50%);
+    }
+    
+    /* Letter */
+    .letter {
+      position: absolute;
+      width: 225px;
+      height: 120px;
+      background: #a0d8ef;
+      top: 15px;
+      left: 12px;
+      border-radius: 4px;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      padding: 15px;
+      box-sizing: border-box;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      transform: translateY(0);
+      transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      opacity: 0;
+    }
+    
+    /* Open state */
+    .open .envelope:before {
+      transform: rotateX(180deg);
+    }
+    .open .letter {
+      transform: translateY(-100px);
+      opacity: 1;
+      transition-delay: 0.3s;
+    }
+    
+    /* Character GIFs - now much larger */
+    .character {
+      position: absolute;
+      z-index: 5;
+      transition: all 0.5s ease;
+      opacity: 0;
+    }
+    .wanderer {
+      width: 180px; /* Increased size */
+      top: -120px; /* Adjusted position */
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .duck {
+      width: 160px; /* Increased size */
+      bottom: -80px; /* Adjusted position */
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .open ~ .wanderer, .open ~ .duck {
+      opacity: 1;
+    }
+    
+    /* Confetti canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 4;
+      pointer-events: none;
+    }
+    
+    /* Tap hint */
+    .tap-hint {
+      margin-top: 25px;
+      color: #666;
+      font-size: 1rem;
+      animation: pulse 2s infinite;
+      position: relative;
+      z-index: 10;
+      text-shadow: 1px 1px 3px rgba(255,255,255,0.8);
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <h1>Tap the envelope!</h1>
+    
+    <div class="envelope-container" id="envelope-container">
+      <div class="envelope"></div>
+      <div class="letter">
+        Yeee, han kei Bock me uf no contact 🦢⭐
+      </div>
+    </div>
+    
+    <img class="character wanderer" src="https://media.tenor.com/IOmNgGE2VFYAAAAj/wanderer-genshin-wanderer.gif" alt="Chibi Wanderer">
+    <img class="character duck" src="https://media.tenor.com/ONCIbEgWKBoAAAAi/dudu-bubu-duck-dudu-running.gif" alt="Cute Duck">
+    
+    <canvas id="confetti-canvas"></canvas>
+    
+    <p class="tap-hint">(Tap to open)</p>
+  </div>
+
+  <script>
+    const envelopeContainer = document.getElementById('envelope-container');
+    const wanderer = document.querySelector('.wanderer');
+    const duck = document.querySelector('.duck');
+    let isOpen = false;
+
+    envelopeContainer.addEventListener('click', () => {
+      if (isOpen) return;
+      
+      isOpen = true;
+      envelopeContainer.classList.add('open');
+      
+      // Trigger confetti
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#ff0000', '#00ff00', '#3a4a7e', '#5d76cb', '#a0d8ef']
+      });
+      
+      // Show characters with slight delay
+      setTimeout(() => {
+        wanderer.style.opacity = '1';
+        duck.style.opacity = '1';
+      }, 500);
+    });
+  </script>
+</body>
+</html>

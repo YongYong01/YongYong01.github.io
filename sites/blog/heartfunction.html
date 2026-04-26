@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>ETH - Kevin Frunz</title>
+    <link rel="stylesheet" href="../../css/reset.css">
+    <link rel="stylesheet" href="../../css/simplegrid.css">
+    <link rel="stylesheet" href="../../css/icomoon.css">
+    <link rel="stylesheet" href="../../css/lightcase.css">
+    <link rel="stylesheet" href="../../js/owl-carousel/owl.carousel.css" />
+    <link rel="stylesheet" href="../../js/owl-carousel/owl.theme.css" />
+    <link rel="stylesheet" href="../../js/owl-carousel/owl.transitions.css" />
+    <link rel="stylesheet" href="../../style.css">
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,900' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+</head>
+<body id="eth">
+    <!-- Header -->
+    <header id="top-header" class="header-home">
+        <div class="grid">
+            <div class="col-1-1">
+                <div class="content">
+                    <!--
+                    <div class="logo-wrap">
+                        <a href="../index.html" class="logo">Kevin Frunz</a>
+                    </div>
+                    -->
+                    <nav class="navigation">
+                        <input type="checkbox" id="nav-button">
+                        <label for="nav-button" onclick></label>
+                        <ul class="nav-container">
+                            <li><a href="../../index.html" style="color: black;">About Me</a></li>
+                            <li><a href="../ETH.html" class="current" style="color: black;">ETH</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- End Header -->
+
+    <!-- ETH Section -->
+    <div class="wrap services-wrap" id="services">
+        <section class="grid grid-pad services">
+            <h2>Heart Function</h2>
+            <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Shape Function Explanation</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Why These Functions Form a Heart Shape</h1>
+    <p>The given functions <code>f(x) = sqrt(1 - (|x| - 1)^2)</code> and <code>g(x) = cos<sup>-1</sup>(1 - |x|) - π</code> together form the shape of a heart when plotted. Let's break down the components of these functions and see how they combine to create a heart shape.</p>
+
+    <h2>Function <code>f(x)</code></h2>
+    <p><code>f(x) = sqrt(1 - (|x| - 1)^2)</code></p>
+    <ul>
+        <li><strong>Absolute Value |x|</strong>: The absolute value function <code>|x|</code> makes the function symmetric about the y-axis.</li>
+        <li><strong>Shifting and Squaring</strong>: <code>(|x| - 1)^2</code>: This shifts the absolute value function by 1 unit to the left and right, then squares it, creating a parabola-like shape that is symmetric about the y-axis.</li>
+        <li><strong>Square Root</strong>: <code>sqrt(1 - (|x| - 1)^2)</code>: This takes the upper half of a circle with radius 1 centered at (1, 0) and (-1, 0).</li>
+    </ul>
+
+    <h2>Function <code>g(x)</code></h2>
+    <p><code>g(x) = cos<sup>-1</sup>(1 - |x|) - π</code></p>
+    <ul>
+        <li><strong>Absolute Value |x|</strong>: Similar to <code>f(x)</code>, the absolute value makes the function symmetric about the y-axis.</li>
+        <li><strong>Cosine Inverse cos<sup>-1</sup>(1 - |x|)</strong>: The expression <code>1 - |x|</code> ranges from 1 to -1 as <code>|x|</code> ranges from 0 to 2. The inverse cosine function <code>cos<sup>-1</sup></code> will output values from 0 to π for inputs from 1 to -1.</li>
+        <li><strong>Shifting Down by π</strong>: Subtracting <code>π</code> shifts the range of the inverse cosine function down by <code>π</code> units.</li>
+    </ul>
+
+    <h2>Combining <code>f(x)</code> and <code>g(x)</code></h2>
+    <p>When you plot these functions together, you get a heart shape because:</p>
+    <ul>
+        <li>For <code>-2 ≤ x ≤ 2</code>, the <code>f(x)</code> function creates the upper semicircle of the heart.</li>
+        <li>For <code>-2 ≤ x ≤ 2</code>, the <code>g(x)</code> function creates the lower cusp of the heart, with the curve smoothly transitioning downwards from the sides towards the center.</li>
+    </ul>
+
+    <h2>Heart Shape Plot</h2>
+    <div id="plotly-plot"></div>
+    <script>
+        function fx(x) {
+            return Math.sqrt(1 - Math.pow(Math.abs(x) - 1, 2));
+        }
+
+        function gx(x) {
+            return Math.acos(1 - Math.abs(x)) - Math.PI;
+        }
+
+        let xValues = [];
+        let fValues = [];
+        let gValues = [];
+
+        for (let i = -2; i <= 2; i += 0.01) {
+            xValues.push(i);
+            fValues.push(fx(i));
+            gValues.push(gx(i));
+        }
+
+        let trace1 = {
+            x: xValues,
+            y: fValues,
+            mode: 'lines',
+            name: 'f(x) = sqrt(1 - (|x| - 1)^2)',
+            line: {color: 'red'}
+        };
+
+        let trace2 = {
+            x: xValues,
+            y: gValues,
+            mode: 'lines',
+            name: 'g(x) = cos^-1(1 - |x|) - π',
+            line: {color: 'blue'}
+        };
+
+        let data = [trace1, trace2];
+
+        let layout = {
+            title: 'Heart Shape Formed by Functions',
+            xaxis: {title: 'x'},
+            yaxis: {title: 'y'},
+            showlegend: true
+        };
+
+        Plotly.newPlot('plotly-plot', data, layout);
+    </script>
+</body>
+
+           
+
+        </section>
+        
+    </div>
+    <!-- End Work Section -->
+
+    <!-- Footer -->
+    <footer class="wrap">
+            <!-- Footer content here -->
+
+        <div class="grid grid-pad">
+            <div class="col-1-1" >
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/6m9BlPDlDSBAxzjV23E6cT?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+        </div>
+        <div class="social-footer">
+            <div class="grid grid-pad">
+                <div class="col-1-1" >
+                    <div class="content">
+                        <div class="social-set">
+                            <a  href="https://www.linkedin.com/in/kevin-frunz-a822a4183/"><i class="icon-linkedin2"></i></a>
+                            <a  href="https://www.instagram.com/kevinfrunz/"><i class="icon-instagram"></i></a>
+                            <a href="https://github.com/YongYong01"><i class="icon-github3"></i></a>
+                        </div>
+                        <p class="source-org copyright">© 2022| All Rights Reserved Created By <a href="http://templatestock.co">Kevin Frunz</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/mixitup.js"></script>
+    <script src="../js/smoothscroll.js"></script>
+    <script src="../js/jquery.nav.js"></script>
+    <script src="../js/owl-carousel/owl.carousel.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min.js"></script>
+    <script src="../js/jquery.counterup.min.js"></script>
+    <script src="../js/lightcase.min.js"></script>
+</body>
+</html>
