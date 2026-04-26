@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderer Quiz - Modern Anemo Style</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background wind motif decorations -->
+    <div class="wind-motif"></div>
+    <div class="wind-motif-2"></div>
+
+    <div class="container">
+        <!-- Wanderer Image at the top -->
+        <div class="wanderer-image">
+            <img src="https://media.tenor.com/FPVIfdoqEk4AAAAi/wanderer.gif" alt="Wanderer" />
+        </div>
+
+        <!-- Quiz Content -->
+        <div id="quiz-container">
+            <h2 id="question"></h2>
+            <div id="options">
+                <!-- Options will be dynamically loaded here -->
+            </div>
+            <div id="links"></div> <!-- Add this element to display links -->
+            <button class="next-btn" onclick="nextQuestion()">Next Question</button>
+        </div>
+    </div>
+
+    <!-- Music Toggle Button (Fixed Position) -->
+    <button class="music-toggle-btn" onclick="toggleMusic()">🎵</button>
+
+    <!-- Audio Element for Looping Music (use the same file path as index.html) -->
+    <audio id="thinking-music" loop>
+        <source src="sounds/GracieGrace.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

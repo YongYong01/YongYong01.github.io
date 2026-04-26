@@ -1,0 +1,173 @@
+/* General Body Styling with Full-Screen Background Image */
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #d8d8c4; /* Soft cream color for text */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+    background: url("https://i.redd.it/my-genshin-wallpapers-so-far-looking-forward-to-fontaine-v0-327axiwu8cab1.jpg?width=3840&format=pjpg&auto=webp&s=baf05f186148e2d9de5ae7fdb67c1614c1a3237a") no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* Dark Overlay for Readability */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent dark overlay */
+    z-index: -1;
+}
+
+/* Title Styling */
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    color: #d8d8c4; /* Light cream color */
+    margin-bottom: 20px;
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+    animation: floatText 4s ease-in-out infinite;
+}
+
+/* Timer Styling */
+.timer {
+    font-size: 1.1rem;
+    color: #f5dba8; /* Soft golden yellow */
+    margin-bottom: 20px;
+    background-color: rgba(34, 49, 63, 0.5); /* Dark blue-green with transparency */
+    padding: 8px 16px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Game Board Styling */
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 100px);
+    grid-gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: rgba(34, 49, 63, 0.6); /* Dark, semi-transparent blue-green */
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    border: 2px solid #3e5e6b; /* Dark blue border */
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Card Styling */
+.card {
+    width: 100px;
+    height: 150px;
+    background-color: #1e2f3a; /* Deep blue */
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+    border: 2px solid #3e5e6b; /* Dark blue border */
+}
+
+/* Card Hover Effect */
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(255, 223, 132, 0.6); /* Golden glow */
+}
+
+/* Enhanced Flip Animation */
+.card.flipped {
+    transform: rotateY(180deg);
+    box-shadow: 0 4px 12px rgba(255, 223, 132, 0.4); /* Soft golden glow on flip */
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+    object-position: top;
+    display: none;
+}
+
+.card.flipped img {
+    display: block;
+}
+
+/* Game End Message Styling */
+#game-end-message {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: #f5dba8; /* Soft golden yellow */
+    margin-top: 20px;
+    display: none;
+    animation: fadeIn 0.5s ease, floatText 4s ease-in-out infinite;
+}
+
+/* Play Again Button Styling */
+#play-again {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #1e2f3a; /* Deep blue */
+    color: #f5dba8; /* Soft golden yellow */
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    font-family: 'Poppins', sans-serif;
+}
+
+#play-again:hover {
+    background-color: #334f5b; /* Slightly lighter blue */
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(255, 223, 132, 0.6); /* Golden glow on hover */
+}
+
+#play-again::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 10%, transparent 10%);
+    background-size: 15px 15px;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+    transition: opacity 0.3s, transform 0.5s;
+}
+
+#play-again:hover::after {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Keyframes for Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes floatText {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}

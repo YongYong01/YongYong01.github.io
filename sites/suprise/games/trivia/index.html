@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderer Knowledge Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background wind animation -->
+    <div class="wind-container"></div>
+
+    <div class="container">
+        <!-- Wanderer Image at the top -->
+        <div class="wanderer-image">
+            <img src="https://media.tenor.com/17jVsRIVYiEAAAAi/wanderer-genshin-impact.gif" alt="Wanderer" />
+        </div>
+
+        <!-- Quiz Content -->
+        <header class="landing-header">
+            <h1 class="main-title">Test Your Wanderer Knowledge</h1>
+            <p class="subtext">Do you know all there is about the Wanderer? Take this quiz and prove your mastery!</p>
+            <button class="start-btn" onclick="startQuiz()">Start the Quiz</button>
+        </header>
+    </div>
+
+     <!-- Music Toggle Button (Fixed Position) -->
+    <button class="music-toggle-btn" onclick="toggleMusic()">🎵</button>
+
+    <!-- Audio Element for Looping Music -->
+    <audio id="thinking-music" loop>
+        <source src="sounds/GracieGrace.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <script src="scripts.js"></script>
+</body>
+</html>
